@@ -1,8 +1,11 @@
+import 'package:chat_app/helpers/view_alert.dart';
+import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/bottom_blue.dart';
 import 'package:chat_app/widgets/custom_input.dart';
 import 'package:chat_app/widgets/label.dart';
 import 'package:chat_app/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -49,6 +52,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authservice = Provider.of<AuthService>(context);
     return Container(
         margin: const EdgeInsets.only(top: 40),
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -72,11 +76,24 @@ class __FormState extends State<_Form> {
             //Create Buttom
             BottomBlue(
                 text: 'Regiter',
-                onPressed: () {
-                  print(nameCtrl.text);
-                  print(emailCtrl.text);
-                  print(passCtrl.text);
-                }),
+                onPressed: authservice.autentication
+                    ? null
+                    : () async {
+                        print(nameCtrl.text);
+                        print(emailCtrl.text);
+                        print(passCtrl.text);
+                        final registerOk = await authservice.register(
+                            nameCtrl.text.trim(),
+                            emailCtrl.text.trim(),
+                            passCtrl.text.trim());
+
+                        if (registerOk == true) {
+                          //Connect to Socket Server
+                          Navigator.pushReplacementNamed(context, 'users');
+                        } else {
+                          viewAlert(context, 'Register Incorrect', registerOk);
+                        }
+                      }),
           ],
         ));
   }
