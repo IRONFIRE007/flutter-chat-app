@@ -1,5 +1,6 @@
 import 'package:chat_app/helpers/view_alert.dart';
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:chat_app/widgets/bottom_blue.dart';
 import 'package:chat_app/widgets/custom_input.dart';
 import 'package:chat_app/widgets/label.dart';
@@ -53,6 +54,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authservice = Provider.of<AuthService>(context);
+    final socketservice = Provider.of<SocketService>(context);
     return Container(
         margin: const EdgeInsets.only(top: 40),
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -89,6 +91,7 @@ class __FormState extends State<_Form> {
 
                         if (registerOk == true) {
                           //Connect to Socket Server
+                          socketservice.connect();
                           Navigator.pushReplacementNamed(context, 'users');
                         } else {
                           viewAlert(context, 'Register Incorrect', registerOk);
